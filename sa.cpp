@@ -48,3 +48,6 @@ void construct_lcp(int n)
         lcp[_rank[i]] = h;
     }
 }
+
+// string str; 
+// construct_sa(str.length() + 1);
