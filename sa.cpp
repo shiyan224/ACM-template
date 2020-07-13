@@ -1,53 +1,39 @@
-int _rank[maxn], sa[maxn], lcp[maxn], y[maxn], c[maxn];
 
-void construct_sa(int len)
+int c[maxn], rk[maxn], y[maxn], sa[maxn];
+//c——第一关键字出现的次数
+//rk——rk[i]表示后缀i的排名,可重复
+//y——按照第二关键字排序的后缀排名
+//答案存在sa[0]-sa[n - 1]
+void construct_sa(int n, int *r)
 {
-    int m = 150;
-    for (int i = 0; i < m; i++)
-        c[i] = 0;
-    for (int i = 0; i < len; i++)
-        c[_rank[i] = s[i]]++;
+    int m = 10;
+    for (int i = 0; i < n; i++)
+        c[rk[i] = r[i]]++;
     for (int i = 1; i < m; i++)
-        c[i] += c[i-1];
-    for (int i = len-1; i >= 0; i--) 
-        sa[--c[s[i]]] = i;
-    for (int k = 1; k <= len; k <<= 1) {
+        c[i] += c[i - 1];
+    for (int i = n - 1; i >= 0; i--)
+        sa[--c[rk[i]]] = i;
+    for (int k = 1; ; k <<= 1) {
         int p = 0;
-        for (int i = 0; i < m; i++)
-            c[i] = 0;
-        for (int i = len - k; i < len; i++)
+        for (int i = n - k; i < n; i++) 
             y[p++] = i;
-        for (int i = 0; i < len; i++)
-            if (sa[i] >= k) y[p++] = sa[i] - k;
-        for (int i = 0; i < len; i++)
-            c[_rank[y[i]]]++;
+        for (int i = 0; i < n; i++)
+            if (sa[i] >= k) 
+                y[p++] = sa[i] - k;
+        for (int i = 0; i < m; i++)     
+            c[i] = 0;
+        for (int i = 0; i < n; i++)
+            c[rk[y[i]]]++;
         for (int i = 1; i < m; i++)
-            c[i] += c[i-1];
-        for (int i = len - 1; i >= 0; i--) 
-            sa[--c[_rank[y[i]]]] = y[i];
-        p = 1; 
-        swap(_rank, y);
-        _rank[sa[0]] = 0;
-        for (int i = 0; i < len; i++) 
-            _rank[sa[i]] = _rank[sa[i-1]]==_rank[sa[i]] && _rank[sa[i-1]+k]==_rank[sa[i]+k] ? p-1 : p++;
-        if (p >= len) break;
+            c[i] += c[i - 1];
+        for (int i = n - 1; i >= 0; i--)
+            sa[--c[rk[y[i]]]] = y[i];
+        swap(rk, y);
+        rk[sa[0]] = 0;
+        p = 1;
+        for (int i = 1; i < n; i++)
+            rk[sa[i]] = y[sa[i - 1]] == y[sa[i]] && y[sa[i - 1] + k] == y[sa[i] + k] ? p - 1 : p++;
         m = p;
+        if (p >= n) break;
     }
 }
-
-void construct_lcp(int n)
-{
-    for (int i = 0; i <= n; i++)
-        _rank[sa[i]] = i;
-    int h = 0;
-    lcp[0] = 0;
-    for (int i = 0; i < n; i++) {
-        int j = sa[_rank[i] - 1];
-        if (h > 0) h--;
-        while (s[i+h] == s[j+h]) h++;
-        lcp[_rank[i]] = h;
-    }
-}
-
-// string str; 
-// construct_sa(str.length() + 1);
